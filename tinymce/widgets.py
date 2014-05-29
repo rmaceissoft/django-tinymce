@@ -9,7 +9,6 @@ http://code.djangoproject.com/wiki/CustomWidgetsTinyMCE
 import json
 from django import forms
 from django.conf import settings
-from django.contrib.admin import widgets as admin_widgets
 from django.core.urlresolvers import reverse
 from django.forms.widgets import flatatt
 try:
@@ -100,8 +99,15 @@ class TinyMCE(forms.Textarea):
     media = property(_media)
 
 
-class AdminTinyMCE(admin_widgets.AdminTextareaWidget, TinyMCE):
-    pass
+class AdminTinyMCE(TinyMCE):
+
+    def __init__(self, content_language=None, attrs=None, mce_attrs=None, profile=None):
+        final_attrs = {'class': 'vTextField'}
+        if attrs is not None:
+            final_attrs.update(attrs)
+        super(AdminTinyMCE, self).__init__(
+            content_language=content_language, attrs=final_attrs,
+            mce_attrs=mce_attrs, profile=profile)
 
 
 def get_language_config(content_language=None):
